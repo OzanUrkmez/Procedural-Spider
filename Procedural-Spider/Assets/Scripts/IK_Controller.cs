@@ -9,7 +9,7 @@ public class IK_Controller : MonoBehaviour
     private int _chainLength;
 
     [SerializeField]
-    private Transform _targetTransform;
+    private Transform _target;
 
 
 
@@ -55,6 +55,48 @@ public class IK_Controller : MonoBehaviour
             }
 
             current = current.parent;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        ResolveIK();
+    }
+
+    private void ResolveIK()
+    {
+        if (_target == null)
+            return;
+
+        if (_bonesLength.Length != _chainLength)
+            Init();
+
+        //get positions
+
+        for(int i = 0; i < _bones.Length; i++)
+        {
+            _positions[i] = _bones[i].position;
+        }
+
+        //fun part!
+
+        //sqr magnitude is faster since no square roots are calculated
+        if((_target.position - _bones[0].position).sqrMagnitude >= _completeLength * _completeLength)
+        {
+            //extend towards the target in a line. "Reach" for a far target.
+            var direction = (_target.position - _positions[0]).normalized;
+
+            for(int i = 1; i < _positions.Length; i++)
+            {
+                _positions[i] = _positions[i - 1] + direction * _bonesLength[i - 1];
+            }
+        }
+
+
+        //set positions
+        for (int i = 0; i < _bones.Length; i++)
+        {
+            _bones[i].position = _positions[i];  
         }
     }
 
