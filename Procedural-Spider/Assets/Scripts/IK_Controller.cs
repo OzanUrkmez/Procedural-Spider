@@ -34,6 +34,28 @@ public class IK_Controller : MonoBehaviour
         _bonesLength = new float[_chainLength];
 
         _completeLength = 0;
+
+        //the lowest in the hierarchy is this one.
+        var current = transform;
+
+        for(int i = _bones.Length - 1; i >= 0; i--)
+        {
+            _bones[i] = current;
+
+            if(i == _bones.Length - 1)
+            {
+                //bone lowest in hierarchy. This has no length.
+
+            }
+            else
+            {
+                //all other bones
+                _bonesLength[i] = (_bones[i + 1].position - current.position).magnitude; //distance between us and next lower in hierarchy. 
+                _completeLength += _bonesLength[i];
+            }
+
+            current = current.parent;
+        }
     }
 
     #region Visuals
