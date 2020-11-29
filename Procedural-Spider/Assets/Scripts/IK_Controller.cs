@@ -12,6 +12,18 @@ public class IK_Controller : MonoBehaviour
     private Transform _targetTransform;
 
 
+
+
+    protected float[] _boneLengths;
+    protected float _completeLength;
+    protected Transform[] _bones;
+    protected Vector3[] _positions;
+
+
+
+    #region Visuals
+
+
     [SerializeField]
     private bool _drawGizmos;
 
@@ -32,5 +44,7 @@ public class IK_Controller : MonoBehaviour
             }
         }    
     }
+
+    #endregion
 
 }
