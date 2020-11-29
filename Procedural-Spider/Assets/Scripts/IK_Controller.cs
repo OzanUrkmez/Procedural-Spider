@@ -10,6 +10,8 @@ public class IK_Controller : MonoBehaviour
 
     [SerializeField]
     private Transform _target;
+    [SerializeField]
+    private Transform _pole;
 
     [SerializeField]
     private int _iterations;
@@ -119,6 +121,16 @@ public class IK_Controller : MonoBehaviour
         }
 
 
+        //movement towards pole
+        if(_pole != null)
+        {
+            for(int i = 1; i < _positions.Length - 1; i++)
+            {
+                CorrectTowardsPole(i);
+            }
+        }
+
+
         //set positions
         for (int i = 0; i < _bones.Length; i++)
         {
@@ -138,6 +150,19 @@ public class IK_Controller : MonoBehaviour
     {
         _positions[positionIndex] = 
             _positions[positionIndex - 1] + (_positions[positionIndex] - _positions[positionIndex - 1]).normalized * _bonesLength[positionIndex - 1];
+    }
+
+    private void CorrectTowardsPole(int positionIndex)
+    {
+        Vector3 planeCenter = _positions[positionIndex - 1];
+
+        Plane plane = new Plane(_positions[positionIndex + 1] - planeCenter, planeCenter);
+
+        var projectedPole = plane.ClosestPointOnPlane(_pole.position);
+        var projectedBone = plane.ClosestPointOnPlane(_positions[positionIndex]);
+
+        var angle = Vector3.SignedAngle(projectedBone - planeCenter, projectedPole - planeCenter, plane.normal);
+        _positions[positionIndex] = Quaternion.AngleAxis(angle, plane.normal) * (_positions[positionIndex] - planeCenter) + planeCenter;
     }
 
     #endregion
