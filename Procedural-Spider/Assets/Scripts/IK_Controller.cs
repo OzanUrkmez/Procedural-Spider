@@ -14,12 +14,27 @@ public class IK_Controller : MonoBehaviour
 
 
 
-    protected float[] _boneLengths;
+    protected float[] _bonesLength;
     protected float _completeLength;
     protected Transform[] _bones;
     protected Vector3[] _positions;
 
 
+    private void Awake()
+    {
+        Init();
+    }
+
+
+    private void Init()
+    {
+        //initialize our arrays
+        _bones = new Transform[_chainLength + 1];
+        _positions = new Vector3[_chainLength + 1];
+        _bonesLength = new float[_chainLength];
+
+        _completeLength = 0;
+    }
 
     #region Visuals
 
