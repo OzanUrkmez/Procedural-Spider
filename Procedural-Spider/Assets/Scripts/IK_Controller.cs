@@ -11,8 +11,10 @@ public class IK_Controller : MonoBehaviour
     [SerializeField]
     private Transform _target;
 
-
-
+    [SerializeField]
+    private int _iterations;
+    [SerializeField]
+    private float stopDelta;
 
     protected float[] _bonesLength;
     protected float _completeLength;
@@ -91,6 +93,30 @@ public class IK_Controller : MonoBehaviour
                 _positions[i] = _positions[i - 1] + direction * _bonesLength[i - 1];
             }
         }
+        else //Reach for the target, bending other bones accordingly.
+        {
+            for(int iteration = 0; iteration < _iterations; iteration++)
+            {
+                //back
+                for(int i = _positions.Length - 1; i > 0; i--)
+                {
+                    if (i == _positions.Length - 1)
+                        _positions[i] = _target.position; //the last bone should be at target.
+                    else
+                        CorrectPositionForward(i);
+                }
+
+                //forward
+                for(int i = 1; i < _positions.Length; i++)
+                {
+                    CorrectPositionBackward(i);
+                }
+
+                //close enough
+                if ((_positions[_positions.Length - 1] - _target.position).sqrMagnitude < stopDelta * stopDelta)
+                    break;
+            }
+        }
 
 
         //set positions
@@ -99,6 +125,22 @@ public class IK_Controller : MonoBehaviour
             _bones[i].position = _positions[i];  
         }
     }
+
+    #region Utilities
+
+    private void CorrectPositionForward(int positionIndex)
+    {
+        _positions[positionIndex] = 
+            _positions[positionIndex + 1] + (_positions[positionIndex] - _positions[positionIndex + 1]).normalized * _bonesLength[positionIndex];
+    }
+
+    private void CorrectPositionBackward(int positionIndex)
+    {
+        _positions[positionIndex] = 
+            _positions[positionIndex - 1] + (_positions[positionIndex] - _positions[positionIndex - 1]).normalized * _bonesLength[positionIndex - 1];
+    }
+
+    #endregion
 
     #region Visuals
 
