@@ -6,6 +6,9 @@ public class IK_Controller : MonoBehaviour
 {
 
     [SerializeField]
+    private Transform lowestTransform;
+
+    [SerializeField]
     private int _chainLength;
 
     [SerializeField]
@@ -51,7 +54,7 @@ public class IK_Controller : MonoBehaviour
         _completeLength = 0;
 
         //the lowest in the hierarchy is this one.
-        var current = transform;
+        var current = lowestTransform;
 
         for(int i = _bones.Length - 1; i >= 0; i--)
         {
@@ -213,7 +216,7 @@ public class IK_Controller : MonoBehaviour
     {
         if (_drawGizmos)
         {
-            var current = this.transform;
+            var current = lowestTransform;
             for(int i = 0; i < _chainLength && current != null && current.parent != null;i++)
             {
                 var scale = Vector3.Distance(current.position, current.parent.position) * 0.1f;
