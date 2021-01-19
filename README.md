@@ -2,8 +2,10 @@
  
 A project that aims to procedurally create spider objects with procedural animations and different behaviours.
 
-Implemented features
+# Implemented features
 
-##IK
+## IK
 
-The project currently has a custom IK solution written with C#. It also has a simple shader written to help interact with the IK target and pole target.
+The project currently has a custom IK solution written with C#. It also has a simple shader written to help interact with the IK target and pole target. It is thus possible to move around the spider leg procedurally with this algorithm.
+
+
